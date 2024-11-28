@@ -672,6 +672,14 @@
   In: cuda_compile(${libname} ${srcs})
   Out: dpct_helper_sycl_compile(${libname} ${srcs})
 
+- Rule: rule_cuda_compile_with_opts_without_linkage
+  Kind: CMakeRule
+  Priority: Fallback
+  MatchMode: Partial
+  CmakeSyntax: rule_cuda_compile_06
+  In: cuda_compile(${libname} ${srcs} OPTIONS ${opts})
+  Out: dpct_helper_sycl_compile(${libname} ${srcs})
+
 - Rule: rule_target_compile_options
   Kind: CMakeRule
   Priority: Fallback
