@@ -1187,7 +1187,7 @@
 - Rule: rule_cuda_compile_fatbin
   Kind: CMakeRule
   Priority: Fallback
-  CmakeSyntax: cuda_compile_fatbin
+  CmakeSyntax: rule_cuda_compile_fatbin
   In: cuda_compile_fatbin(${value})
   Out: dpct_helper_compile_sycl_code(${value})
 
