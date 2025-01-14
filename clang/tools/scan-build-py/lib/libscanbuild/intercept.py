@@ -156,7 +156,10 @@ def capture(args):
         else:
             # run the build command
             environment = setup_environment(args, tmp_dir)
-            exit_code = run_build(args.build, env=environment)
+            if args.build and args.build[1].endswith("setup.py"):
+                exit_code = run_python_build(args.build, env=environment)
+            else:
+                exit_code = run_build(args.build, env=environment)
             # read the intercepted exec calls
             exec_traces = itertools.chain.from_iterable(
                 parse_exec_trace(os.path.join(tmp_dir, filename))
@@ -442,3 +445,28 @@ def entry_hash(entry):
     command = " ".join(decode(entry["command"])[1:])
 
     return "<>".join([filename, directory, command])
+
+def run_python_build(build_command, env):
+    """Run the build process for python projects."""
+    setup_py_path = os.path.abspath(build_command[1])
+    build_args = build_command[2:]
+
+    # Change to the directory containing setup.py
+    os.chdir(os.path.dirname(setup_py_path))
+
+    # Run the build command and capture the logs
+    build_log_path = "build_log.txt"
+    command = [build_command[0], os.path.basename(setup_py_path)] + build_args
+    with open(build_log_path, "w") as build_log_file:
+        result = subprocess.call(command, env=env, stdout=build_log_file, stderr=subprocess.STDOUT)
+    
+    # Parse the build log to get the compilation database entries
+    work_directory = os.path.dirname(setup_py_path)
+    entries = parse_build_log(build_log_path, work_directory)
+
+    # Dump the compilation database
+    cdb_path = "compile_commands.json"
+    with open(cdb_path, "w") as handle:
+        json.dump(entries, handle, sort_keys=True, indent=4)
+
+    return result
