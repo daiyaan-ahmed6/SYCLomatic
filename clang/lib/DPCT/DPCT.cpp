@@ -765,6 +765,8 @@ int runDPCT(int argc, const char **argv) {
           AnalysisScope),
       [](const std::string &Str) { return clang::tooling::UnifiedPath(Str); });
 
+  std::cout << NumJobsOpt << std::endl;
+
   // Action: just show -- --help information and then exit
   if (CommonOptionsParser::hasHelpOption(OriginalArgc, argv))
     dpctExit(MigrationSucceeded);

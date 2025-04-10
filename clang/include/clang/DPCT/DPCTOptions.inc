@@ -910,6 +910,21 @@ DPCT_OPTION(
     llvm::cl::value_desc("dir"), llvm::cl::cat(CtHelpCatBasic),
     llvm::cl::ZeroOrMore)
 
+DPCT_OPTION(
+    clang::dpct::opt, unsigned int, NumJobsOpt,
+    clang::dpct::DpctOptionClass::OC_Attribute,
+    DPCT_OPTION_ACTIONS(clang::dpct::DpctActionKind::DAK_Analysis,
+                        clang::dpct::DpctActionKind::DAK_Migration),
+    "jobs",
+    llvm::cl::desc(
+        "The number of jobs to run in paralell. \n "
+        "Default: 1"),
+    llvm::cl::value_desc("number"), llvm::cl::cat(CtHelpCatBasic),
+    llvm::cl::Optional)
+
+DPCT_ALIASE(NumJobsOpt, "j", llvm::cl::desc("Alias for --jobs."),
+            llvm::cl::NotHidden)
+
 DPCT_FLAG_OPTION(
     LimitChangeExtension, clang::dpct::DpctOptionClass::OC_Attribute,
     DPCT_OPTION_ACTIONS(clang::dpct::DpctActionKind::DAK_Migration),
