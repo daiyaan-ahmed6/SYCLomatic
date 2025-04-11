@@ -94,6 +94,34 @@ public:
     }
   }
 
+  void get_dependencies(dpct::experimental::node_ptr node,
+                        dpct::experimental::node_ptr *dependencies,
+                        std::size_t *numberOfNodes) {
+    auto node_dependencies = node->get_predecessors();
+    node_dependencies_map[node] = node_dependencies;
+    *numberOfNodes = node_dependencies.size();
+    if (!dependencies) {
+      return;
+    }
+    for (std::size_t i = 0; i < *numberOfNodes; i++) {
+      dependencies[i] = &node_dependencies_map[node][i];
+    }
+  }
+
+  void get_dependent_nodes(dpct::experimental::node_ptr node,
+                           dpct::experimental::node_ptr *dependentNodes,
+                           std::size_t *numberOfNodes) {
+    auto node_dependents = node->get_successors();
+    node_dependents_map[node] = node_dependents;
+    *numberOfNodes = node_dependents.size();
+    if (!dependentNodes) {
+      return;
+    }
+    for (std::size_t i = 0; i < *numberOfNodes; i++) {
+      dependentNodes[i] = &node_dependents_map[node][i];
+    }
+  }
+
 private:
   std::unordered_map<sycl::queue *, command_graph_ptr> queue_graph_map;
   std::unordered_map<dpct::experimental::command_graph_ptr,
@@ -102,6 +130,12 @@ private:
   std::unordered_map<dpct::experimental::command_graph_ptr,
                      std::vector<sycl::ext::oneapi::experimental::node>>
       root_nodes_map;
+  std::unordered_map<dpct::experimental::node_ptr,
+                     std::vector<sycl::ext::oneapi::experimental::node>>
+      node_dependencies_map;
+  std::unordered_map<dpct::experimental::node_ptr,
+                     std::vector<sycl::ext::oneapi::experimental::node>>
+      node_dependents_map;
 };
 } // namespace detail
 
@@ -189,6 +223,20 @@ static void get_root_nodes(dpct::experimental::command_graph_ptr graph,
                            std::size_t *numberOfNodes) {
   detail::graph_mgr::instance().get_root_nodes(graph, nodesArray,
                                                numberOfNodes);
+}
+
+static void get_dependencies(dpct::experimental::node_ptr node,
+                             dpct::experimental::node_ptr *dependencies,
+                             std::size_t *numberOfNodes) {
+  detail::graph_mgr::instance().get_dependencies(node, dependencies,
+                                                 numberOfNodes);
+}
+
+static void get_dependent_nodes(dpct::experimental::node_ptr node,
+                                dpct::experimental::node_ptr *dependent_nodes,
+                                std::size_t *numberOfNodes) {
+  detail::graph_mgr::instance().get_dependent_nodes(node, dependent_nodes,
+                                                    numberOfNodes);
 }
 
 } // namespace experimental

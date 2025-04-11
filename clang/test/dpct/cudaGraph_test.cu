@@ -132,6 +132,22 @@ int main() {
   cudaGraphNodeGetType(node, &nodeType);
   CUDA_CHECK_THROW(cudaGraphNodeGetType(node, &nodeType));
 
+  // CHECK: dpct::experimental::get_dependencies(node, node4, &numNodes);
+  // CHECK-NEXT: CUDA_CHECK_THROW(DPCT_CHECK_ERROR(dpct::experimental::get_dependencies(node, node4, &numNodes)));
+  cudaGraphNodeGetDependencies(node, node4, &numNodes);
+  CUDA_CHECK_THROW(cudaGraphNodeGetDependencies(node, node4, &numNodes));
+
+  // CHECK: dpct::experimental::get_dependencies(*node2, node5, &numNodes);
+  cudaGraphNodeGetDependencies(*node2, node5, &numNodes);
+
+  // CHECK: dpct::experimental::get_dependent_nodes(node, node4, &numNodes);
+  // CHECK-NEXT: CUDA_CHECK_THROW(DPCT_CHECK_ERROR(dpct::experimental::get_dependent_nodes(node, node4, &numNodes)));
+  cudaGraphNodeGetDependentNodes(node, node4, &numNodes);
+  CUDA_CHECK_THROW(cudaGraphNodeGetDependentNodes(node, node4, &numNodes));
+
+  // CHECK: dpct::experimental::get_dependent_nodes(*node2, node5, &numNodes);
+  cudaGraphNodeGetDependentNodes(*node2, node5, &numNodes);
+
   // CHECK: delete (execGraph);
   // CHECK-NEXT: delete (*execGraph2);
   // CHECK-NEXT:  delete (**execGraph3);

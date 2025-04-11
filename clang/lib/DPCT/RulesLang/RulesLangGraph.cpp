@@ -34,7 +34,8 @@ void GraphRule::registerMatcher(MatchFinder &MF) {
                       "cudaGraphExecDestroy", "cudaGraphAddEmptyNode",
                       "cudaGraphAddDependencies", "cudaGraphExecUpdate",
                       "cudaGraphNodeGetType", "cudaGraphGetNodes",
-                      "cudaGraphGetRootNodes");
+                      "cudaGraphGetRootNodes", "cudaGraphNodeGetDependencies",
+                      "cudaGraphNodeGetDependantNodes");
   };
   MF.addMatcher(
       callExpr(callee(functionDecl(functionName()))).bind("FunctionCall"),
